@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Login } from "@/screens/Login";
 import { Register } from "@/screens/Register";
 
-type PublicStackParamsList = {
+export type PublicStackParamsList = {
   Login: undefined;
   Register: undefined;
 };
