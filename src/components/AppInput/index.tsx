@@ -5,11 +5,12 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+import { useRef, useState } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { MaterialIcons } from "@expo/vector-icons";
-import { colors } from "@/shared/colors";
-import { useRef, useState } from "react";
 import clsx from "clsx";
+
+import { colors } from "@/shared/colors";
 
 interface AppInputParams<T extends FieldValues> extends TextInputProps {
   name: Path<T>;
@@ -28,7 +29,7 @@ export const AppInput = <T extends FieldValues>({
   ...rest
 }: AppInputParams<T>) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(secureTextEntry);
+  const [showText, setShowText] = useState(secureTextEntry);
   const inputRef = useRef<TextInput>(null);
 
   const checkFocus = () => {
@@ -62,17 +63,17 @@ export const AppInput = <T extends FieldValues>({
                 onFocus={checkFocus}
                 onChangeText={onChange}
                 onEndEditing={checkFocus}
-                secureTextEntry={showPassword}
+                secureTextEntry={showText}
                 placeholderTextColor={colors.gray[700]}
                 className="flex-1 text-base text-gray-500"
               />
 
               {secureTextEntry && (
-                <TouchableOpacity onPress={() => setShowPassword((oldValue) => !oldValue)}>
+                <TouchableOpacity onPress={() => setShowText((oldValue) => !oldValue)}>
                   <MaterialIcons
                     size={24}
                     color={colors.gray[600]}
-                    name={showPassword ? "visibility" : "visibility-off"}
+                    name={showText ? "visibility" : "visibility-off"}
                   />
                 </TouchableOpacity>
               )}
