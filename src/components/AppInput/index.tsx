@@ -15,6 +15,7 @@ interface AppInputParams<T extends FieldValues> extends TextInputProps {
   name: Path<T>;
   label?: string;
   control: Control<T>;
+  secureTextEntry?: boolean;
   leftIconName?: keyof typeof MaterialIcons.glyphMap;
 }
 
@@ -23,9 +24,11 @@ export const AppInput = <T extends FieldValues>({
   name,
   label,
   leftIconName,
+  secureTextEntry,
   ...rest
 }: AppInputParams<T>) => {
   const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(secureTextEntry);
   const inputRef = useRef<TextInput>(null);
 
   const checkFocus = () => {
@@ -51,16 +54,28 @@ export const AppInput = <T extends FieldValues>({
                   color={isFocused ? colors["accent-brand"] : colors.gray[600]}
                 />
               )}
+              
               <TextInput
                 {...rest}
                 value={value}
                 ref={inputRef}
-                className="flex-1 text-base text-gray-500"
                 onFocus={checkFocus}
                 onChangeText={onChange}
                 onEndEditing={checkFocus}
+                secureTextEntry={showPassword}
                 placeholderTextColor={colors.gray[700]}
+                className="flex-1 text-base text-gray-500"
               />
+
+              {secureTextEntry && (
+                <TouchableOpacity onPress={() => setShowPassword((oldValue) => !oldValue)}>
+                  <MaterialIcons
+                    size={24}
+                    color={colors.gray[600]}
+                    name={showPassword ? "visibility" : "visibility-off"}
+                  />
+                </TouchableOpacity>
+              )}
             </TouchableOpacity>
           </View>
         );
