@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { DismissKeyboardView } from "@/components/DismissKeyboardView";
-import { LoginForm } from "./LoginForm";
 import { AuthHeader } from "@/components/AuthHeader";
+import { LoginForm } from "./LoginForm";
 
 export const Login = () => {
   return (
