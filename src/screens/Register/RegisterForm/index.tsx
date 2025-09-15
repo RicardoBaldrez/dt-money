@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { View, Text } from "react-native";
 import { useForm } from "react-hook-form";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
@@ -6,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AppInput } from "@/components/AppInput";
 import { AppButton } from "@/components/AppButton";
 import { PublicStackParamsList } from "@/routes/PublicRoutes";
+import { useAuthContext } from "@/context/auth.context";
 import { schema } from "./schema";
 
 export interface RegisterFormParams {
@@ -30,9 +32,18 @@ export const RegisterForm = () => {
     resolver: yupResolver(schema),
   });
 
+  const { handleRegister } = useAuthContext();
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
-  const onSubmit = async () => {};
+  const onSubmit = async (formData: RegisterFormParams) => {
+    try {
+      await handleRegister(formData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log("🚀 ~ onSubmit ~ error:", error.response?.data);
+      }
+    }
+  };
 
   return (
     <>
