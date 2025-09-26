@@ -1,5 +1,4 @@
-import { AxiosError } from "axios";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import { useForm } from "react-hook-form";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,6 +7,8 @@ import { AppInput } from "@/components/AppInput";
 import { AppButton } from "@/components/AppButton";
 import { PublicStackParamsList } from "@/routes/PublicRoutes";
 import { useAuthContext } from "@/context/auth.context";
+import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
+import { colors } from "@/shared/colors";
 import { schema } from "./schema";
 
 export interface RegisterFormParams {
@@ -33,15 +34,14 @@ export const RegisterForm = () => {
   });
 
   const { handleRegister } = useAuthContext();
+  const { handleError } = useErrorHandler();
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
   const onSubmit = async (formData: RegisterFormParams) => {
     try {
       await handleRegister(formData);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log("🚀 ~ onSubmit ~ error:", error.response?.data);
-      }
+      handleError(error, "Falha ao realizar cadastro");
     }
   };
 
@@ -78,7 +78,7 @@ export const RegisterForm = () => {
         secureTextEntry
       />
       <View className="flex-1 justify-between mt-8 mb-6 min-h-[250px]">
-        <AppButton onPress={handleSubmit(onSubmit)} iconName="arrow-forward">Cadastrar</AppButton>
+        <AppButton onPress={handleSubmit(onSubmit)} iconName="arrow-forward">{isSubmitting ? <ActivityIndicator color={colors.white} /> : "Cadastrar"}</AppButton>
         <View>
           <Text className="mb-6 text-gray-300 text-base">Já possui uma conta?</Text>
           <AppButton onPress={() => navigation.navigate("Login")} iconName="arrow-forward" mode="outline">
