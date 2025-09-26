@@ -8,6 +8,8 @@ import { AppInput } from "@/components/AppInput";
 import { AppButton } from "@/components/AppButton";
 import { PublicStackParamsList } from "@/routes/PublicRoutes";
 import { useAuthContext } from "@/context/auth.context";
+import { useSnackbarContext } from "@/context/snackbar.context";
+import { AppError } from "@/shared/helpers/AppError";
 import { schema } from "./schema";
 
 export interface FormLoginParams {
@@ -25,18 +27,22 @@ export const LoginForm = () => {
       email: "",
       password: "",
     },
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
 
   const { handleAuthenticate } = useAuthContext();
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
+  const { notify } = useSnackbarContext();
 
   const onSubmit = async (userData: FormLoginParams) => {
     try {
-      await handleAuthenticate(userData);      
+      await handleAuthenticate(userData);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log("🚀 ~ onSubmit ~ error2:", error.response?.data)
+      if (error instanceof AppError) {
+        notify({
+          message: error.message,
+          type: "error",
+        });
       }
     }
   };
@@ -60,10 +66,18 @@ export const LoginForm = () => {
       />
 
       <View className="flex-1 justify-between mt-8 mb-6 min-h-[250px]">
-        <AppButton onPress={handleSubmit(onSubmit)} iconName="arrow-forward">Login</AppButton>
+        <AppButton onPress={handleSubmit(onSubmit)} iconName="arrow-forward">
+          Login
+        </AppButton>
         <View>
-          <Text className="mb-6 text-gray-300 text-base">Ainda não possui uma conta?</Text>
-          <AppButton onPress={() => navigation.navigate("Register")} iconName="arrow-forward" mode="outline">
+          <Text className="mb-6 text-gray-300 text-base">
+            Ainda não possui uma conta?
+          </Text>
+          <AppButton
+            onPress={() => navigation.navigate("Register")}
+            iconName="arrow-forward"
+            mode="outline"
+          >
             Cadastrar
           </AppButton>
         </View>
