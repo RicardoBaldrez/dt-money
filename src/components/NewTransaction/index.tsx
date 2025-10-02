@@ -6,6 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@/shared/colors";
 import { ICreateTransactionRequest } from "@/shared/interfaces/https/createTransactionRequest";
 import { useBottomSheetContext } from "@/context";
+import { TransactionTypeSelector } from "../SelectType";
 
 export const NewTransaction = () => {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -16,7 +17,6 @@ export const NewTransaction = () => {
     categoryId: 0,
     value: 0,
   });
-  console.log("🚀 ~ NewTransaction ~ transaction:", transaction)
 
   const setTransactionData = (
     key: keyof ICreateTransactionRequest,
@@ -27,7 +27,10 @@ export const NewTransaction = () => {
 
   return (
     <View className="px-8 py-5">
-      <TouchableOpacity onPress={closeBottomSheet} className=" w-full flex-row justify-between items-center">
+      <TouchableOpacity
+        onPress={closeBottomSheet}
+        className=" w-full flex-row justify-between items-center"
+      >
         <Text className="text-white text-xl font-bold">Nova transação</Text>
         <MaterialIcons name="close" size={20} color={colors.gray[700]} />
       </TouchableOpacity>
@@ -48,6 +51,10 @@ export const NewTransaction = () => {
           minValue={0}
           onChangeValue={(value) => setTransactionData("value", value ?? 0)}
           className="text-white text-lg h-[50px] bg-background-primary my-2 rounded-[6px] pl-4"
+        />
+        <TransactionTypeSelector
+          typeId={transaction.typeId}
+          setTransactionType={(typeId) => setTransactionData("typeId", typeId)}
         />
       </View>
     </View>
