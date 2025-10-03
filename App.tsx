@@ -6,16 +6,19 @@ import { AuthContextProvider } from "@/context/auth.context";
 import { SnackbarContextProvider } from "@/context/snackbar.context";
 import { Snackbar } from "@/components/Snackbar";
 import { BottomSheetProvider } from "@/context/bottomSheet.context";
+import { TransactionContextProvider } from "@/context/transaction.context";
 
 export default function App() {
   return (
     <GestureHandlerRootView className="flex-1">
       <SnackbarContextProvider>
         <AuthContextProvider>
-          <BottomSheetProvider>
-            <NavigationRoutes />
-            <Snackbar />
-          </BottomSheetProvider>
+          <TransactionContextProvider>
+            <BottomSheetProvider>
+              <NavigationRoutes />
+              <Snackbar />
+            </BottomSheetProvider>
+          </TransactionContextProvider>
         </AuthContextProvider>
       </SnackbarContextProvider>
     </GestureHandlerRootView>
