@@ -7,6 +7,7 @@ import { colors } from "@/shared/colors";
 import { ICreateTransactionRequest } from "@/shared/interfaces/https/createTransactionRequest";
 import { useBottomSheetContext } from "@/context";
 import { TransactionTypeSelector } from "../SelectType";
+import { SelectCategoryModal } from "../SelectCategoryModal";
 
 export const NewTransaction = () => {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -51,6 +52,12 @@ export const NewTransaction = () => {
           minValue={0}
           onChangeValue={(value) => setTransactionData("value", value ?? 0)}
           className="text-white text-lg h-[50px] bg-background-primary my-2 rounded-[6px] pl-4"
+        />
+        <SelectCategoryModal
+          selectedCategory={transaction.categoryId}
+          onSelect={(categoryId) =>
+            setTransactionData("categoryId", categoryId)
+          }
         />
         <TransactionTypeSelector
           typeId={transaction.typeId}
