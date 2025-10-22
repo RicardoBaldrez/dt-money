@@ -46,7 +46,6 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
       page: 1,
       perPage: 10,
     })
-    console.log("🚀 ~ TransactionContextProvider ~ transactionsResponse:", transactionsResponse)
 
     setTransactions(transactionsResponse.data);
   }, [])

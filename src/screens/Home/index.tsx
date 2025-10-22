@@ -14,23 +14,23 @@ export const Home = () => {
     try {
       await fetchCategories();
     } catch (error) {
-      handleError(error, 'Falha ao buscar categorias');
+      handleError(error, "Falha ao buscar categorias");
     }
-  }
+  };
 
   useEffect(() => {
     (async () => {
-      handleFetchCategories();
-      fetchTransactions();
+      await Promise.all([handleFetchCategories(), fetchTransactions()]);
     })();
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-background-secondary">
+    <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
         data={[]}
         renderItem={(item) => <></>}
         ListHeaderComponent={<ListHeader />}
+        className=" bg-background-secondary"
       />
     </SafeAreaView>
   );
