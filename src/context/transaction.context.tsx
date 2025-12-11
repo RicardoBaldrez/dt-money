@@ -21,6 +21,7 @@ export type ITransactionContext = {
   createTransaction: (transaction: ICreateTransactionRequest) => Promise<void>;
   fetchTransactions: () => Promise<void>;
   totalTransactions: ITotalTransactions;
+  transactions: ITransaction[];
 };
 
 export const TransactionContext = createContext({} as ITransactionContext);
@@ -67,6 +68,7 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
         createTransaction,
         fetchTransactions,
         totalTransactions,
+        transactions
       }}
     >
       {children}
