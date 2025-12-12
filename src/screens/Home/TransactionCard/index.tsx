@@ -8,6 +8,7 @@ import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { colors } from "@/shared/colors";
 import { ITransaction } from "@/shared/interfaces/transaction";
 import { TransactionTypes } from "@/shared/enums/transaction-types";
+import { RightAction } from "./RightAction";
 
 interface ITransactionCardProps {
   transaction: ITransaction;
@@ -18,6 +19,8 @@ export const TransactionCard: FC<ITransactionCardProps> = ({ transaction }) => {
 
   return (
     <Swipeable
+      overshootRight={false}
+      renderRightActions={() => <RightAction />}
       containerStyle={{
         alignItems: "center",
         alignSelf: "center",
