@@ -9,6 +9,7 @@ import { colors } from "@/shared/colors";
 import { ITransaction } from "@/shared/interfaces/transaction";
 import { TransactionTypes } from "@/shared/enums/transaction-types";
 import { RightAction } from "./RightAction";
+import { LeftAction } from "./LeftAction";
 
 interface ITransactionCardProps {
   transaction: ITransaction;
@@ -20,7 +21,9 @@ export const TransactionCard: FC<ITransactionCardProps> = ({ transaction }) => {
   return (
     <Swipeable
       overshootRight={false}
+      overshootLeft={false}
       renderRightActions={() => <RightAction transactionId={transaction.id} />}
+      renderLeftActions={() => <LeftAction transaction={transaction} />}
       containerStyle={{
         alignItems: "center",
         alignSelf: "center",
