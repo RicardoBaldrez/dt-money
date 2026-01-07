@@ -20,7 +20,7 @@ export const TransactionCard: FC<ITransactionCardProps> = ({ transaction }) => {
   return (
     <Swipeable
       overshootRight={false}
-      renderRightActions={() => <RightAction />}
+      renderRightActions={() => <RightAction transactionId={transaction.id} />}
       containerStyle={{
         alignItems: "center",
         alignSelf: "center",
