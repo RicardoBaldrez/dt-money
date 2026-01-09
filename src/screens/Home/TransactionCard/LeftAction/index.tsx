@@ -6,6 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { ITransaction } from "@/shared/interfaces/transaction";
 import { colors } from "@/shared/colors";
 import { useBottomSheetContext } from "@/context/bottomSheet.context";
+import { EdiTransactionForm } from "./EditTransactionForm";
 
 interface ILeftActionProps {
   transaction: ITransaction;
@@ -16,7 +17,7 @@ export const LeftAction: FC<ILeftActionProps> = ({ transaction }) => {
 
   return (
     <Pressable onPress={() => {
-      openBottomSheet(<></>, 1)
+      openBottomSheet(<EdiTransactionForm transaction={transaction} />, 0)
     }}>
       <View className="h-[140] bg-accent-blue w-[80] rounded-l-[6] items-center justify-center">
         <MaterialIcons name="edit" size={30} color={colors.white} />
