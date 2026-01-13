@@ -9,6 +9,7 @@ import {
 
 import {
   ICreateTransactionRequest,
+  IPagination,
   TransactionCategoryResponse,
 } from "@/shared/interfaces/https";
 import * as transactionService from "@/shared/services/dt-money/transaction.service";
@@ -16,21 +17,24 @@ import { ITransaction } from "@/shared/interfaces/transaction";
 import { ITotalTransactions } from "@/shared/interfaces/totalTransactions";
 import { IUpdateTransactionRequest } from "@/shared/interfaces/https/updateTransactionRequest";
 import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
-import { useSnackbarContext } from "./snackbar.context";
 
-export type ITransactionContext = {
+interface IFetchTransactionsParams {
+  page: number;
+}
+
+export type TransactionContextType = {
   fetchCategories: () => Promise<void>;
   categories: TransactionCategoryResponse[];
   createTransaction: (transaction: ICreateTransactionRequest) => Promise<void>;
   updateTransaction: (transaction: IUpdateTransactionRequest) => Promise<void>;
-  fetchTransactions: () => Promise<void>;
+  fetchTransactions: (params: IFetchTransactionsParams) => Promise<void>;
   totalTransactions: ITotalTransactions;
   transactions: ITransaction[];
   refreshTransactions: () => Promise<void>;
   loading: boolean;
 };
 
-export const TransactionContext = createContext({} as ITransactionContext);
+export const TransactionContext = createContext({} as TransactionContextType);
 
 export const TransactionContextProvider: FC<PropsWithChildren> = ({
   children,
@@ -40,6 +44,11 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
   );
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState<IPagination>({
+    page: 1,
+    perPage: 15,
+    totalRows: 0,
+  });
   const [totalTransactions, setTotalTransactions] =
     useState<ITotalTransactions>({
       revenue: 0,
@@ -48,7 +57,6 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
     });
 
   const { handleError } = useErrorHandler();
-  const { notify } = useSnackbarContext();
 
   const refreshTransactions = async () => {
     setLoading(true);
@@ -61,7 +69,10 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
       setTransactions(transactionsResponse.data);
       setTotalTransactions(transactionsResponse.totalTransactions);
     } catch (error) {
-      handleError(error, "Falha ao atualizar os dados das transações. Tente novamente.");
+      handleError(
+        error,
+        "Falha ao atualizar os dados das transações. Tente novamente."
+      );
     } finally {
       setLoading(false);
     }
@@ -83,15 +94,33 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
     await refreshTransactions();
   };
 
-  const fetchTransactions = useCallback(async () => {
-    const transactionsResponse = await transactionService.getTransactions({
-      page: 1,
-      perPage: 10,
-    });
+  const fetchTransactions = useCallback(
+    async ({ page = 0 }: IFetchTransactionsParams) => {
+      setLoading(true);
 
-    setTransactions(transactionsResponse.data);
-    setTotalTransactions(transactionsResponse.totalTransactions);
-  }, []);
+      const transactionsResponse = await transactionService.getTransactions({
+        page,
+        perPage: pagination.perPage,
+      });
+
+      if(page === 1) {
+        setTransactions(transactionsResponse.data);
+      } else {
+        setTransactions((prevState) => [...prevState, ...transactionsResponse.data]);
+      }
+
+      setTotalTransactions(transactionsResponse.totalTransactions);
+
+      setPagination({
+        ...pagination,
+        page,
+        totalRows: transactionsResponse.totalRows,
+      });
+
+      setLoading(false);
+    },
+    [pagination]
+  );
 
   return (
     <TransactionContext.Provider
