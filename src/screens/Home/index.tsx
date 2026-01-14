@@ -13,41 +13,54 @@ export const Home = () => {
     transactions,
     refreshTransactions,
     loadMoreTransactions,
-    loading,
+    handleLoadings,
+    loadings,
   } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
   const handleFetchCategories = async () => {
     try {
+      handleLoadings({ key: "initial", value: true });
       await fetchCategories();
     } catch (error) {
       handleError(error, "Falha ao buscar categorias");
+    } finally {
+      handleLoadings({ key: "initial", value: false });
     }
   };
 
   const handleFetchInitialTransactions = async () => {
     try {
-      await fetchTransactions({ page: 1 })
+      handleLoadings({ key: "initial", value: true });
+      await fetchTransactions({ page: 1 });
     } catch (error) {
       handleError(error, "Falha ao buscar transações");
+    } finally {
+      handleLoadings({ key: "initial", value: false });
     }
-  }
+  };
 
   const handleLoadMoreTransactions = async () => {
     try {
-      await loadMoreTransactions()
+      handleLoadings({ key: "loadMore", value: true });
+      await loadMoreTransactions();
     } catch (error) {
       handleError(error, "Falha ao carregar novas transações");
+    } finally {
+      handleLoadings({ key: "loadMore", value: false });
     }
-  }
+  };
 
   const handleRefreshTransactions = async () => {
     try {
-      await refreshTransactions()
+      handleLoadings({ key: "refresh", value: true });
+      await refreshTransactions();
     } catch (error) {
       handleError(error, "Falha ao recarregar transações");
+    } finally {
+      handleLoadings({ key: "refresh", value: false });
     }
-  }
+  };
 
   useEffect(() => {
     (async () => {
@@ -68,10 +81,7 @@ export const Home = () => {
         onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
         refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={handleRefreshTransactions}
-          />
+          <RefreshControl refreshing={loadings.refresh} onRefresh={handleRefreshTransactions} />
         }
         className=" bg-background-secondary"
       />
