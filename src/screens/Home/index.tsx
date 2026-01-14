@@ -5,6 +5,7 @@ import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
 import { useTransactionContext } from "@/context";
 import { ListHeader } from "./ListHeader";
 import { TransactionCard } from "./TransactionCard";
+import { EmptyList } from "./EmptyList";
 
 export const Home = () => {
   const {
@@ -74,12 +75,13 @@ export const Home = () => {
   return (
     <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
-        data={transactions}
+        data={[]}
         ListHeaderComponent={<ListHeader />}
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
         onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
+        ListEmptyComponent={loadings.initial ? null : <EmptyList />}
         refreshControl={
           <RefreshControl refreshing={loadings.refresh} onRefresh={handleRefreshTransactions} />
         }
