@@ -13,6 +13,7 @@ export const Home = () => {
     fetchTransactions,
     transactions,
     refreshTransactions,
+    loadMoreTransactions,
     loading,
   } = useTransactionContext();
   const { handleError } = useErrorHandler();
@@ -27,7 +28,10 @@ export const Home = () => {
 
   useEffect(() => {
     (async () => {
-      await Promise.all([handleFetchCategories(), fetchTransactions({ page: 1 })]);
+      await Promise.all([
+        handleFetchCategories(),
+        fetchTransactions({ page: 1 }),
+      ]);
     })();
   }, []);
 
@@ -35,16 +39,18 @@ export const Home = () => {
     <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
         data={transactions}
+        ListHeaderComponent={<ListHeader />}
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
-        ListHeaderComponent={<ListHeader />}
-        className=" bg-background-secondary"
+        onEndReached={loadMoreTransactions}
+        onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl
             refreshing={loading}
             onRefresh={refreshTransactions}
           />
         }
+        className=" bg-background-secondary"
       />
     </SafeAreaView>
   );
