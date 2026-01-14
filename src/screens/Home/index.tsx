@@ -2,12 +2,11 @@ import { useEffect } from "react";
 import { SafeAreaView, FlatList, RefreshControl } from "react-native";
 
 import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
-import { useAuthContext, useTransactionContext } from "@/context";
+import { useTransactionContext } from "@/context";
 import { ListHeader } from "./ListHeader";
 import { TransactionCard } from "./TransactionCard";
 
 export const Home = () => {
-  const { handleLogout } = useAuthContext();
   const {
     fetchCategories,
     fetchTransactions,
@@ -26,11 +25,35 @@ export const Home = () => {
     }
   };
 
+  const handleFetchInitialTransactions = async () => {
+    try {
+      await fetchTransactions({ page: 1 })
+    } catch (error) {
+      handleError(error, "Falha ao buscar transações");
+    }
+  }
+
+  const handleLoadMoreTransactions = async () => {
+    try {
+      await loadMoreTransactions()
+    } catch (error) {
+      handleError(error, "Falha ao carregar novas transações");
+    }
+  }
+
+  const handleRefreshTransactions = async () => {
+    try {
+      await refreshTransactions()
+    } catch (error) {
+      handleError(error, "Falha ao recarregar transações");
+    }
+  }
+
   useEffect(() => {
     (async () => {
       await Promise.all([
         handleFetchCategories(),
-        fetchTransactions({ page: 1 }),
+        handleFetchInitialTransactions(),
       ]);
     })();
   }, []);
@@ -42,12 +65,12 @@ export const Home = () => {
         ListHeaderComponent={<ListHeader />}
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
-        onEndReached={loadMoreTransactions}
+        onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl
             refreshing={loading}
-            onRefresh={refreshTransactions}
+            onRefresh={handleRefreshTransactions}
           />
         }
         className=" bg-background-secondary"

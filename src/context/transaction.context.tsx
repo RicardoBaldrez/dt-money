@@ -16,7 +16,6 @@ import * as transactionService from "@/shared/services/dt-money/transaction.serv
 import { ITransaction } from "@/shared/interfaces/transaction";
 import { ITotalTransactions } from "@/shared/interfaces/totalTransactions";
 import { IUpdateTransactionRequest } from "@/shared/interfaces/https/updateTransactionRequest";
-import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
 
 interface IFetchTransactionsParams {
   page: number;
@@ -47,7 +46,7 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<IPagination>({
     page: 1,
-    perPage: 5,
+    perPage: 15,
     totalRows: 0,
     totalPages: 0,
   });
@@ -58,35 +57,26 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
       total: 0,
     });
 
-  const { handleError } = useErrorHandler();
-
-  const refreshTransactions = async () => {
+  const refreshTransactions = useCallback(async () => {
     const { page, perPage } = pagination;
 
     setLoading(true);
-    try {
-      const transactionsResponse = await transactionService.getTransactions({
-        page: 1,
-        perPage: page * perPage,
-      });
+    const transactionsResponse = await transactionService.getTransactions({
+      page: 1,
+      perPage: page * perPage,
+    });
 
-      setTransactions(transactionsResponse.data);
-      setTotalTransactions(transactionsResponse.totalTransactions);
-      setPagination({
-        ...pagination,
-        page: 1,
-        totalRows: transactionsResponse.totalRows,
-        totalPages: transactionsResponse.totalPages,
-      });
-    } catch (error) {
-      handleError(
-        error,
-        "Falha ao atualizar os dados das transações. Tente novamente."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    setTransactions(transactionsResponse.data);
+    setTotalTransactions(transactionsResponse.totalTransactions);
+    setPagination({
+      ...pagination,
+      page: 1,
+      totalRows: transactionsResponse.totalRows,
+      totalPages: transactionsResponse.totalPages,
+    });
+
+    setLoading(false);
+  }, [pagination]);
 
   const fetchCategories = async () => {
     const categoriesResponse =
@@ -113,10 +103,13 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
         perPage: pagination.perPage,
       });
 
-      if(page === 1) {
+      if (page === 1) {
         setTransactions(transactionsResponse.data);
       } else {
-        setTransactions((prevState) => [...prevState, ...transactionsResponse.data]);
+        setTransactions((prevState) => [
+          ...prevState,
+          ...transactionsResponse.data,
+        ]);
       }
 
       setTotalTransactions(transactionsResponse.totalTransactions);
