@@ -61,15 +61,23 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
   const { handleError } = useErrorHandler();
 
   const refreshTransactions = async () => {
+    const { page, perPage } = pagination;
+
     setLoading(true);
     try {
       const transactionsResponse = await transactionService.getTransactions({
         page: 1,
-        perPage: 10,
+        perPage: page * perPage,
       });
 
       setTransactions(transactionsResponse.data);
       setTotalTransactions(transactionsResponse.totalTransactions);
+      setPagination({
+        ...pagination,
+        page: 1,
+        totalRows: transactionsResponse.totalRows,
+        totalPages: transactionsResponse.totalPages,
+      });
     } catch (error) {
       handleError(
         error,
