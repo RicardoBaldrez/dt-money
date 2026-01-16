@@ -1,11 +1,17 @@
 import { useEffect } from "react";
-import { SafeAreaView, FlatList, RefreshControl } from "react-native";
+import {
+  SafeAreaView,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
 
 import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
 import { useTransactionContext } from "@/context";
 import { ListHeader } from "./ListHeader";
 import { TransactionCard } from "./TransactionCard";
 import { EmptyList } from "./EmptyList";
+import { colors } from "@/shared/colors";
 
 export const Home = () => {
   const {
@@ -75,15 +81,23 @@ export const Home = () => {
   return (
     <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
-        data={[]}
+        data={transactions}
         ListHeaderComponent={<ListHeader />}
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
         onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
         ListEmptyComponent={loadings.initial ? null : <EmptyList />}
+        ListFooterComponent={
+          loadings.loadMore ? (
+            <ActivityIndicator color={colors["accent-brand-light"]} />
+          ) : null
+        }
         refreshControl={
-          <RefreshControl refreshing={loadings.refresh} onRefresh={handleRefreshTransactions} />
+          <RefreshControl
+            refreshing={loadings.refresh}
+            onRefresh={handleRefreshTransactions}
+          />
         }
         className=" bg-background-secondary"
       />
