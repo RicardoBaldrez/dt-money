@@ -2,11 +2,13 @@ import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 
-import { useTransactionContext } from "@/context";
+import { useBottomSheetContext, useTransactionContext } from "@/context";
 import { colors } from "@/shared/colors";
+import { TransactionFilters } from "./TransactionFilters";
 
 export const FilterInput = () => {
   const { pagination, searchText, setSearchText, fetchTransactions } = useTransactionContext();
+  const { openBottomSheet } = useBottomSheetContext();
 
   const [text, setText] = useState("");
 
@@ -32,7 +34,7 @@ export const FilterInput = () => {
       </View>
       <TouchableOpacity className="flex-row items-center justify-between h-16">
         <TextInput value={text} onChangeText={setText} className="h-[50] text-white w-full bg-background-primary text-lg pl-4" placeholderTextColor={colors.gray[600]} placeholder="Busque uma transação" />
-        <TouchableOpacity className="absolute right-0">
+        <TouchableOpacity className="absolute right-0" onPress={() => openBottomSheet(<TransactionFilters />, 1)}>
           <MaterialIcons name="filter-list" size={26} color={colors["accent-brand-light"]} className="mr-3" />
         </TouchableOpacity>
       </TouchableOpacity>

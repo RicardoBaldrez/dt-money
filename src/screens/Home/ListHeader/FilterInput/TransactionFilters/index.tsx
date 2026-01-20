@@ -1,0 +1,23 @@
+import { View, Text, TouchableOpacity } from "react-native"
+import { MaterialIcons } from "@expo/vector-icons";
+
+import { colors } from "@/shared/colors";
+import { useBottomSheetContext } from "@/context";
+
+import { DateFilter } from "./DateFilter";
+
+export const TransactionFilters = () => {
+  const { closeBottomSheet } = useBottomSheetContext();
+
+  return (
+    <View className="flex-1 bg-gray[1000] p-6">
+      <View className="flex-row justify-between items-center">
+        <Text className="text-white text-xl font-bold mb-5">Filtrar transações</Text>
+        <TouchableOpacity onPress={closeBottomSheet}>
+          <MaterialIcons name="close" size={20} color={colors.gray[600]} />
+        </TouchableOpacity>
+      </View>
+      <DateFilter />
+    </View>
+  )
+}
