@@ -22,6 +22,7 @@ export const Home = () => {
     loadMoreTransactions,
     handleLoadings,
     loadings,
+    pagination,
   } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
@@ -89,7 +90,7 @@ export const Home = () => {
         onEndReachedThreshold={0.5}
         ListEmptyComponent={loadings.initial ? null : <EmptyList />}
         ListFooterComponent={
-          loadings.loadMore ? (
+          loadings.loadMore && pagination.page < pagination.totalPages ? (
             <ActivityIndicator color={colors["accent-brand-light"]} />
           ) : null
         }
