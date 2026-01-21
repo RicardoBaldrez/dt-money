@@ -5,6 +5,7 @@ import { colors } from "@/shared/colors";
 import { useBottomSheetContext } from "@/context";
 
 import { DateFilter } from "./DateFilter";
+import { CategoryFilter } from "./CategoryFilter";
 
 export const TransactionFilters = () => {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -18,6 +19,7 @@ export const TransactionFilters = () => {
         </TouchableOpacity>
       </View>
       <DateFilter />
+      <CategoryFilter />
     </View>
   )
 }
