@@ -26,3 +26,10 @@ export interface IGetTransactionResponse {
   perPage: number;
   totalTransactions: ITotalTransactions;
 }
+
+export interface IFilters {
+  from?: Date;
+  to?: Date;
+  typeId?: number;
+  categoryIds: Record<number, boolean>;
+}

@@ -16,6 +16,7 @@ import * as transactionService from "@/shared/services/dt-money/transaction.serv
 import { ITransaction } from "@/shared/interfaces/transaction";
 import { ITotalTransactions } from "@/shared/interfaces/totalTransactions";
 import { IUpdateTransactionRequest } from "@/shared/interfaces/https/updateTransactionRequest";
+import { IFilters } from "@/shared/interfaces/https/getTransactionRequest";
 
 interface IFetchTransactionsParams {
   page: number;
@@ -30,6 +31,11 @@ interface ILoadings {
 interface IHandleLoadingsParams {
   key: keyof ILoadings;
   value: boolean;
+}
+
+interface IHandleFiltersParams {
+  key: keyof IFilters;
+  value: boolean | Date | number;
 }
 
 export type TransactionContextType = {
@@ -47,6 +53,8 @@ export type TransactionContextType = {
   pagination: IPagination;
   setSearchText: (text: string) => void;
   searchText: string;
+  filters: IFilters;
+  handleFilters: (params: IHandleFiltersParams) => void;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -59,6 +67,12 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
   );
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [searchText, setSearchText] = useState("");
+  const [filters, setFilters] = useState<IFilters>({
+    from: undefined,
+    to: undefined,
+    typeId: undefined,
+    categoryIds: {},
+  });
   const [loadings, setLoadings] = useState<ILoadings>({
     initial: false,
     refresh: false,
@@ -150,6 +164,10 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
     await fetchTransactions({ page: pagination.page + 1 });
   }, [loadings.loadMore, pagination]);
 
+  const handleFilters = ({key, value}: IHandleFiltersParams) => {
+    setFilters((prevState) => ({...prevState, [key]: value}))
+  }
+
   return (
     <TransactionContext.Provider
       value={{
@@ -167,6 +185,8 @@ export const TransactionContextProvider: FC<PropsWithChildren> = ({
         pagination,
         setSearchText,
         searchText,
+        filters,
+        handleFilters,
       }}
     >
       {children}
