@@ -1,3 +1,4 @@
+import { Text, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 
 import { AppButton } from '@/components/AppButton';
@@ -32,9 +33,16 @@ export const LoginForm = () => {
         placeholder="Sua senha"
         secureTextEntry
       />
-      <AppButton mode="fill" iconName="arrow-forward">
-        Login
-      </AppButton>
+
+      <View className="mb-6 mt-8 min-h-[250px] flex-1 justify-between">
+        <AppButton iconName="arrow-forward">Login</AppButton>
+        <View>
+          <Text className="mb-6 text-base text-gray-300">Ainda não possui uma conta?</Text>
+          <AppButton mode="outline" iconName="arrow-forward">
+            Cadastrar
+          </AppButton>
+        </View>
+      </View>
     </>
   );
 };
