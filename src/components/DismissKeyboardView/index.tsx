@@ -7,7 +7,7 @@ export const DismissKeyboardView: FC<PropsWithChildren> = ({ children }) => {
     <SafeAreaView className="flex-1 bg-background-primary">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView behavior="padding" className="flex-1">
-          <ScrollView>{children}</ScrollView>
+          <ScrollView contentContainerClassName="flex-grow">{children}</ScrollView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </SafeAreaView>
