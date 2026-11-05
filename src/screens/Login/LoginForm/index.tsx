@@ -27,7 +27,7 @@ export const LoginForm = () => {
         control={control}
         name="password"
         label="SENHA"
-        leftIconName="mail-outline"
+        leftIconName="lock-outline"
         placeholder="Sua senha"
         secureTextEntry
       />
