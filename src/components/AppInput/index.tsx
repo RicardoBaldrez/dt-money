@@ -8,8 +8,10 @@ import {
   type TextInputProps,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
+
+import { ErrorMessage } from '@/components/ErrorMessage';
 
 import { colors } from '@/shared/colors';
 
@@ -42,7 +44,7 @@ export const AppInput = <T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, value } }) => {
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
         return (
           <View className="mt-4 w-full">
             {label && (
@@ -90,6 +92,7 @@ export const AppInput = <T extends FieldValues>({
                 </TouchableOpacity>
               )}
             </TouchableOpacity>
+            {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
           </View>
         );
       }}
